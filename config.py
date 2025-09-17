@@ -17,11 +17,23 @@ except Exception:
 
 class Settings:
     # Database: support both DATABASE_URL and legacy SQLALCHEMY_DATABASE_URL
-    database_url: str = (
-        os.getenv("DATABASE_URL")
-        or os.getenv("SQLALCHEMY_DATABASE_URL")
-        or "sqlite:///./TodoApplicationDatabase.db"
-    )
+    def get_database_url(self) -> str:
+        # Get database URL from environment
+        database_url = os.getenv("DATABASE_URL") or os.getenv("SQLALCHEMY_DATABASE_URL")
+
+        if database_url:
+            # Handle Render's PostgreSQL URL format
+            if database_url.startswith("postgres://"):
+                # Convert postgres:// to postgresql:// for SQLAlchemy compatibility
+                database_url = database_url.replace("postgres://", "postgresql://", 1)
+            return database_url
+
+        # Fallback to SQLite for local development
+        return "sqlite:///./TodoApplicationDatabase.db"
+
+    @property
+    def database_url(self) -> str:
+        return self.get_database_url()
 
     # Security
     secret_key: str = os.getenv("SECRET_KEY", "change-me-in-prod")
