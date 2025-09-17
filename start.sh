@@ -1,8 +1,17 @@
 #!/bin/bash
 
+# Debug environment variables
+echo "=== Environment Debug ==="
+echo "DATABASE_URL: $DATABASE_URL"
+echo "PORT: $PORT"
+echo "========================="
+
 # Wait for database to be ready
 echo "Waiting for database to be ready..."
 sleep 5
+
+# Test database connection
+echo "Testing database connection..."
 
 # Run database migrations
 echo "Creating database tables..."
